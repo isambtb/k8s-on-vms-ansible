@@ -1,0 +1,14 @@
+---
+- name: Install VirtualBox on Debian-based systems
+  become: yes
+  apt:
+    name: virtualbox
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Install VirtualBox on RedHat-based systems
+  become: yes
+  yum:
+    name: VirtualBox
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"

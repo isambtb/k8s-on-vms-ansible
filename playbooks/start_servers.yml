@@ -1,0 +1,38 @@
+---
+- name: Start and Prepare Servers for Kubernetes Setup
+  hosts: all
+  tasks:
+    - name: Ensure the VMs are running
+      command: VBoxManage startvm "{{ inventory_hostname }}" --type headless
+
+    - name: Wait for SSH to become available
+      wait_for:
+        port: 22
+        host: "{{ inventory_hostname }}"
+        timeout: 300
+
+    - name: Update apt cache
+      become: yes
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      become: yes
+      apt:
+        name:
+          - curl
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+        state: present
+
+    - name: Disable swap
+      become: yes
+      command: swapoff -a
+
+    - name: Keep swap off
+      become: yes
+      replace:
+        path: /etc/fstab
+        regexp: '^\s*([^#\s]+\s+)\s+swap\s+'
+        replace: '#\1swap\t'

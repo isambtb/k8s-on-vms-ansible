@@ -1,0 +1,8 @@
+---
+- include_tasks: install_docker.yml
+- include_tasks: install_k8s.yml
+
+- name: Initialize Kubernetes Cluster
+  hosts: k8s-master
+  tasks:
+    - include_tasks: init_cluster.yml

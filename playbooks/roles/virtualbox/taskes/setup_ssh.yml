@@ -1,0 +1,46 @@
+---
+- name: Generate SSH key pair if not present
+  hosts: localhost
+  tasks:
+    - name: Check if SSH private key exists
+      stat:
+        path: ~/.ssh/id_rsa
+      register: ssh_private_key
+
+    - name: Generate SSH key pair
+      command: ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -N ""
+      when: not ssh_private_key.stat.exists
+
+- name: Copy SSH public key to VMs
+  hosts: all
+  tasks:
+    - name: Install OpenSSH server
+      become: yes
+      apt:
+        name: openssh-server
+        state: present
+
+    - name: Ensure SSH directory exists
+      become: yes
+      file:
+        path: /home/vagrant/.ssh
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0700'
+
+    - name: Copy public key to authorized_keys
+      become: yes
+      copy:
+        src: ~/.ssh/id_rsa.pub
+        dest: /home/vagrant/.ssh/authorized_keys
+        owner: vagrant
+        group: vagrant
+        mode: '0600'
+
+    - name: Enable and start SSH service
+      become: yes
+      service:
+        name: ssh
+        state: started
+        enabled: yes

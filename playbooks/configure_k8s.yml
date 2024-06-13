@@ -1,0 +1,12 @@
+---
+- name: Configure Kubernetes Cluster
+  hosts: all
+  roles:
+    - kubernetes
+
+- name: Join worker nodes to the cluster
+  hosts: k8s-worker
+  tasks:
+    - name: Join worker nodes
+      become: yes
+      command: "{{ hostvars['k8s-master'].kubeadm_join_command }}"

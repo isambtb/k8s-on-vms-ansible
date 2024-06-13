@@ -1,0 +1,21 @@
+---
+- name: Deploy Nginx on Kubernetes Cluster
+  hosts: k8s-master
+  tasks:
+    - name: Create Nginx ConfigMap
+      become: yes
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('template', 'nginx-configmap.yml.j2') }}"
+    
+    - name: Deploy Nginx
+      become: yes
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('template', 'nginx-deployment.yml.j2') }}"
+    
+    - name: Expose Nginx Service
+      become: yes
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('template', 'nginx-service.yml.j2') }}"

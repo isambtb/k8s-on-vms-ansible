@@ -1,0 +1,5 @@
+---
+- name: Create VirtualBox VMs for Kubernetes Cluster
+  hosts: localhost
+  roles:
+    - virtualbox

@@ -1,0 +1,13 @@
+---
+- name: Check if host-only network exists
+  command: VBoxManage list hostonlyifs | grep vboxnet0
+  register: vboxnet0_exists
+  ignore_errors: yes
+
+- name: Create host-only network if not exists
+  command: VBoxManage hostonlyif create
+  when: vboxnet0_exists.rc != 0
+
+- name: Configure host-only network IP
+  command: VBoxManage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 --netmask 255.255.255.0
+  when: vboxnet0_exists.rc != 0

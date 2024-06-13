@@ -1,0 +1,5 @@
+---
+- include_tasks: create_network.yml
+- include_tasks: install_virtualbox.yml
+- include_tasks: create_vms.yml
+- include_tasks: setup_ssh.yml

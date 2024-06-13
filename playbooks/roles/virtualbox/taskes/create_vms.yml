@@ -1,0 +1,72 @@
+---
+- name: Create VM Master Node
+  command: >
+    VBoxManage createvm --name "k8s-master" --ostype "Ubuntu_64" --register
+
+- name: Modify VM Master Node
+  command: >
+    VBoxManage modifyvm "k8s-master" --cpus 2 --memory 2048 --nic1 nat --nic2 hostonly --hostonlyadapter2 "vboxnet0"
+
+- name: Create VM Disk for Master Node
+  command: >
+    VBoxManage createhd --filename "~/VirtualBox VMs/k8s-master/k8s-master.vdi" --size 20000
+
+- name: Attach Disk to Master Node
+  command: >
+    VBoxManage storagectl "k8s-master" --name "SATA Controller" --add sata --controller IntelAhci
+
+- name: Attach Disk to Master Node
+  command: >
+    VBoxManage storageattach "k8s-master" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "~/VirtualBox VMs/k8s-master/k8s-master.vdi"
+
+- name: Attach ISO to Master Node
+  command: >
+    VBoxManage storageattach "k8s-master" --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium "~/Downloads/ubuntu-20.04-live-server-amd64.iso"
+
+- name: Create VM Worker Node 1
+  command: >
+    VBoxManage createvm --name "k8s-worker1" --ostype "Ubuntu_64" --register
+
+- name: Modify VM Worker Node 1
+  command: >
+    VBoxManage modifyvm "k8s-worker1" --cpus 2 --memory 2048 --nic1 nat --nic2 hostonly --hostonlyadapter2 "vboxnet0"
+
+- name: Create VM Disk for Worker Node 1
+  command: >
+    VBoxManage createhd --filename "~/VirtualBox VMs/k8s-worker1/k8s-worker1.vdi" --size 20000
+
+- name: Attach Disk to Worker Node 1
+  command: >
+    VBoxManage storagectl "k8s-worker1" --name "SATA Controller" --add sata --controller IntelAhci
+
+- name: Attach Disk to Worker Node 1
+  command: >
+    VBoxManage storageattach "k8s-worker1" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "~/VirtualBox VMs/k8s-worker1/k8s-worker1.vdi"
+
+- name: Attach ISO to Worker Node 1
+  command: >
+    VBoxManage storageattach "k8s-worker1" --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium "~/Downloads/ubuntu-20.04-live-server-amd64.iso"
+
+- name: Create VM Worker Node 2
+  command: >
+    VBoxManage createvm --name "k8s-worker2" --ostype "Ubuntu_64" --register
+
+- name: Modify VM Worker Node 2
+  command: >
+    VBoxManage modifyvm "k8s-worker2" --cpus 2 --memory 2048 --nic1 nat --nic2 hostonly --hostonlyadapter2 "vboxnet0"
+
+- name: Create VM Disk for Worker Node 2
+  command: >
+    VBoxManage createhd --filename "~/VirtualBox VMs/k8s-worker2/k8s-worker2.vdi" --size 20000
+
+- name: Attach Disk to Worker Node 2
+  command: >
+    VBoxManage storagectl "k8s-worker2" --name "SATA Controller" --add sata --controller IntelAhci
+
+- name: Attach Disk to Worker Node 2
+  command: >
+    VBoxManage storageattach "k8s-worker2" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "~/VirtualBox VMs/k8s-worker2/k8s-worker2.vdi"
+
+- name: Attach ISO to Worker Node 2
+  command: >
+    VBoxManage storageattach "k8s-worker2" --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium "~/Downloads/ubuntu-20.04-live-server-amd64.iso"

@@ -1,0 +1,26 @@
+---
+- name: Initialize the Kubernetes Master
+  become: yes
+  command: kubeadm init --apiserver-advertise-address=192.168.56.101 --pod-network-cidr=10.244.0.0/16
+
+- name: Set up kubeconfig for vagrant user
+  become: yes
+  command: mkdir -p /home/vagrant/.kube
+- name: Set up kubeconfig for vagrant user
+  become: yes
+  command: cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+- name: Set up kubeconfig for vagrant user
+  become: yes
+  command: chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
+
+- name: Install flannel CNI plugin
+  become: yes
+  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+- name: Retrieve join command
+  shell: kubeadm token create --print-join-command
+  register: join_command
+
+- name: Save join command
+  set_fact:
+    kubeadm_join_command: "{{ join_command.stdout }}"
